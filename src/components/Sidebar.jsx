@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Map, Swords, Microscope, Home, Settings, User } from 'lucide-react';
+import { LayoutDashboard, Map, Swords, Microscope, Home, Settings, User, Target } from 'lucide-react';
 import { cn } from '../utils/cn';
 
 const NavItem = ({ icon: Icon, label, active, onClick }) => (
