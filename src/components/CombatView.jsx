@@ -1,0 +1,116 @@
+import React, { useState, useEffect } from 'react';
+import { useGameStore } from '../store/gameStore';
+import { Swords, Skull } from 'lucide-react';
+import { calculateDamage } from '../utils/combatEngine';
+
+export const CombatView = () => {
+  const { player, addXp, addResource, updatePlayerHealth } = useGameStore();
+  const [battleLog, setBattleLog] = useState(["A wild investigator appears!"]);
+  const [enemy, setEnemy] = useState(null);
+
+  const generateEnemy = () => {
+      const types = ['ukaku', 'koukaku', 'rinkaku', 'bikaku'];
+      return {
+        name: `CCG ${['Rank 3', 'Rank 2', 'Rank 1'][Math.floor(Math.random() * 3)]} Investigator`,
+        hp: 50 + (player.level * 20),
+        maxHp: 50 + (player.level * 20),
+        stats: { strength: 3 + player.level },
+        rcType: types[Math.floor(Math.random() * types.length)],
+      };
+  };
+
+  useEffect(() => {
+    if (!enemy) setEnemy(generateEnemy());
+  }, []);
+
+  const handleAttack = () => {
+    if (!enemy) return;
+
+    const pDmg = calculateDamage(player, enemy);
+    const eDmg = calculateDamage({ ...enemy, path: 'human' }, player);
+
+    const newEnemyHp = Math.max(0, enemy.hp - pDmg);
+
+    updatePlayerHealth(-eDmg);
+    setEnemy(prev => ({ ...prev, hp: newEnemyHp }));
+
+    setBattleLog(prev => [
+      `You dealt ${pDmg} damage!`,
+      `${enemy.name} dealt ${eDmg} damage!`,
+      ...prev
+    ]);
+
+    if (newEnemyHp === 0) {
+      const xpGain = 20 * player.level;
+      setBattleLog(prev => [`ENEMY DEFEATED! Gained ${xpGain} XP and 1 Human Meat`, ...prev]);
+      addXp(xpGain);
+      addResource('meat', 1);
+
+      // Track stats
+      useGameStore.setState(state => ({
+        world: {
+          ...state.world,
+          stats: { ...state.world.stats, enemiesDefeated: state.world.stats.enemiesDefeated + 1 }
+        }
+      }));
+    }
+  };
+
+  const nextBattle = () => {
+    setEnemy(generateEnemy());
+    setBattleLog(["Another investigator approaches..."]);
+  };
+
+  if (!enemy) return <div className="p-8 text-white">Searching for enemies...</div>;
+
+  return (
+    <div className="p-8 h-full flex flex-col gap-8 animate-in slide-in-from-right duration-500 text-white">
+      <div className="flex items-center gap-3">
+        <Swords className="w-8 h-8 text-red-600" />
+        <h2 className="text-3xl font-black italic tracking-tighter uppercase">Battlefront</h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1">
+        {/* Enemy Side */}
+        <div className="bg-zinc-950 border border-zinc-800 flex flex-col items-center justify-center p-12 relative overflow-hidden rounded-xl">
+          <div className="absolute top-0 left-0 w-full h-1 bg-zinc-900">
+            <div className="h-full bg-red-600 transition-all" style={{ width: `${(enemy.hp / enemy.maxHp) * 100}%` }} />
+          </div>
+          <Skull className="w-24 h-24 text-zinc-800 mb-6" />
+          <h3 className="text-xl font-bold">{enemy.name}</h3>
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">HP: {enemy.hp} / {enemy.maxHp}</p>
+          <p className="text-[10px] text-blue-400 font-mono mt-1">RC TYPE: {enemy.rcType}</p>
+        </div>
+
+        {/* Battle Log */}
+        <div className="bg-black/40 border border-zinc-800 flex flex-col p-6 rounded-xl">
+          <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Tactical Log</h4>
+          <div className="flex-1 overflow-y-auto space-y-2 font-mono text-[10px] min-h-[200px]">
+            {battleLog.map((log, i) => (
+              <div key={i} className={`p-2 border-l-2 ${log.includes('damage') ? 'border-zinc-700' : 'border-red-600 bg-red-600/5'}`}>
+                {log}
+              </div>
+            ))}
+          </div>
+          <div className="pt-4 mt-auto">
+            {enemy.hp > 0 ? (
+                <button
+                  onClick={handleAttack}
+                  className="w-full bg-red-600 text-white rounded px-4 py-4 hover:bg-red-700 transition-colors text-sm font-black uppercase tracking-widest shadow-lg shadow-red-600/20 active:scale-95 transform"
+                >
+                  Strike
+                </button>
+            ) : (
+                <button
+                  onClick={nextBattle}
+                  className="w-full bg-zinc-800 text-white rounded px-4 py-4 hover:bg-zinc-700 transition-colors text-sm font-black uppercase tracking-widest"
+                >
+                  Find Next Target
+                </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
