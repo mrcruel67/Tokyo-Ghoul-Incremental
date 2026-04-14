@@ -1,6 +1,7 @@
 import React from 'react';
-import { LayoutDashboard, Map, Swords, Microscope, Home, Settings, User, Target } from 'lucide-react';
+import { LayoutDashboard, Map, Swords, Microscope, Home, Settings, User, Target, Book } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { translations } from '../utils/i18n';
 
 const NavItem = ({ icon: Icon, label, active, onClick }) => (
   <button
@@ -19,42 +20,51 @@ const NavItem = ({ icon: Icon, label, active, onClick }) => (
 );
 
 export const Sidebar = ({ currentView, setView }) => {
+  const { world } = useGameStore();
+  const t = translations[world.language] || translations.en;
+
   return (
     <aside className="w-64 border-r border-zinc-800 bg-black/30 h-[calc(100vh-64px)] p-4 flex flex-col justify-between">
       <div className="space-y-2">
         <NavItem
           icon={LayoutDashboard}
-          label="Dashboard"
+          label={t.dashboard}
           active={currentView === 'dashboard'}
           onClick={() => setView('dashboard')}
         />
         <NavItem
+          icon={Book}
+          label={t.story}
+          active={currentView === 'story'}
+          onClick={() => setView('story')}
+        />
+        <NavItem
           icon={Map}
-          label="Tokyo Map"
+          label={t.map}
           active={currentView === 'map'}
           onClick={() => setView('map')}
         />
         <NavItem
           icon={Swords}
-          label="Combat"
+          label={t.combat}
           active={currentView === 'combat'}
           onClick={() => setView('combat')}
         />
         <NavItem
           icon={Target}
-          label="Missions"
+          label={t.missions}
           active={currentView === 'missions'}
           onClick={() => setView('missions')}
         />
         <NavItem
           icon={Microscope}
-          label="Research"
+          label={t.research}
           active={currentView === 'research'}
           onClick={() => setView('research')}
         />
         <NavItem
           icon={Home}
-          label="Hideout / Base"
+          label={t.base}
           active={currentView === 'base'}
           onClick={() => setView('base')}
         />
@@ -63,13 +73,13 @@ export const Sidebar = ({ currentView, setView }) => {
       <div className="space-y-2 pt-4 border-t border-zinc-800">
         <NavItem
           icon={User}
-          label="Profile"
+          label={t.profile}
           active={currentView === 'profile'}
           onClick={() => setView('profile')}
         />
         <NavItem
           icon={Settings}
-          label="Settings"
+          label={t.settings}
           active={currentView === 'settings'}
           onClick={() => setView('settings')}
         />

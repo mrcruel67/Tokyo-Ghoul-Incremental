@@ -8,6 +8,9 @@ import { CombatView } from './components/CombatView';
 import { BaseView } from './components/BaseView';
 import { ResearchView } from './components/ResearchView';
 import { MissionView } from './components/MissionView';
+import { SettingsView } from './components/SettingsView';
+import { StoryView } from './components/StoryView';
+import { InventoryView } from './components/InventoryView';
 import { useGameStore } from './store/gameStore';
 import { BUILDINGS } from './data/buildings';
 
@@ -61,7 +64,9 @@ function App() {
       case 'research': return <ResearchView />;
       case 'base': return <BaseView />;
       case 'missions': return <MissionView />;
-      case 'profile': return <ProfileView />;
+      case 'profile': return <InventoryView />;
+      case 'settings': return <SettingsView />;
+      case 'story': return <StoryView />;
       default: return <Dashboard />;
     }
   };
@@ -79,8 +84,8 @@ function App() {
       </div>
 
       {/* Immersive Overlay */}
-      <div className="fixed inset-0 pointer-events-none border-[20px] border-black/10 mix-blend-overlay z-0" />
-      <div className="fixed inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-black/20 z-0" />
+      <div className="fixed inset-0 pointer-events-none border-[10px] border-black/5 mix-blend-overlay z-0" />
+      <div className="fixed inset-0 pointer-events-none bg-gradient-to-t from-black/60 via-transparent to-black/10 z-0" />
     </div>
   );
 }

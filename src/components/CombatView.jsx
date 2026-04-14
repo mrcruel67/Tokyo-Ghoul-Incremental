@@ -4,7 +4,8 @@ import { Swords, Skull } from 'lucide-react';
 import { calculateDamage } from '../utils/combatEngine';
 
 export const CombatView = () => {
-  const { player, addXp, addResource, updatePlayerHealth } = useGameStore();
+  const { player, addXp, addResource, updatePlayerHealth, world, addReputation } = useGameStore();
+  const t = translations[world.language] || translations.en;
   const [battleLog, setBattleLog] = useState(["A wild investigator appears!"]);
   const [enemy, setEnemy] = useState(null);
 
@@ -45,6 +46,7 @@ export const CombatView = () => {
       setBattleLog(prev => [`ENEMY DEFEATED! Gained ${xpGain} XP and 1 Human Meat`, ...prev]);
       addXp(xpGain);
       addResource('meat', 1);
+      addReputation(player.path === 'ghoul' ? 'aogiri' : 'ccg', 5);
 
       // Track stats
       useGameStore.setState(state => ({
@@ -70,7 +72,7 @@ export const CombatView = () => {
         <h2 className="text-3xl font-black italic tracking-tighter uppercase">Battlefront</h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 overflow-hidden">
         {/* Enemy Side */}
         <div className="bg-zinc-950 border border-zinc-800 flex flex-col items-center justify-center p-12 relative overflow-hidden rounded-xl">
           <div className="absolute top-0 left-0 w-full h-1 bg-zinc-900">
@@ -83,7 +85,7 @@ export const CombatView = () => {
         </div>
 
         {/* Battle Log */}
-        <div className="bg-black/40 border border-zinc-800 flex flex-col p-6 rounded-xl">
+        <div className="lg:col-span-2 bg-black/40 border border-zinc-800 flex flex-col p-6 rounded-xl h-full">
           <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Tactical Log</h4>
           <div className="flex-1 overflow-y-auto space-y-2 font-mono text-[10px] min-h-[200px]">
             {battleLog.map((log, i) => (
@@ -92,20 +94,27 @@ export const CombatView = () => {
               </div>
             ))}
           </div>
-          <div className="pt-4 mt-auto">
+          <div className="pt-4 mt-auto grid grid-cols-2 gap-4">
             {enemy.hp > 0 ? (
-                <button
-                  onClick={handleAttack}
-                  className="w-full bg-red-600 text-white rounded px-4 py-4 hover:bg-red-700 transition-colors text-sm font-black uppercase tracking-widest shadow-lg shadow-red-600/20 active:scale-95 transform"
-                >
-                  Strike
-                </button>
+                <>
+                  <button
+                    onClick={handleAttack}
+                    className="bg-red-600 text-white rounded px-4 py-4 hover:bg-red-700 transition-colors text-xs font-black uppercase tracking-widest shadow-lg shadow-red-600/20 active:scale-95 transform"
+                  >
+                    {t.strike}
+                  </button>
+                  <button
+                    className="bg-zinc-800 text-zinc-400 rounded px-4 py-4 cursor-not-allowed text-xs font-black uppercase tracking-widest"
+                  >
+                    Skill (Locked)
+                  </button>
+                </>
             ) : (
                 <button
                   onClick={nextBattle}
-                  className="w-full bg-zinc-800 text-white rounded px-4 py-4 hover:bg-zinc-700 transition-colors text-sm font-black uppercase tracking-widest"
+                  className="col-span-2 bg-zinc-800 text-white rounded px-4 py-4 hover:bg-zinc-700 transition-colors text-sm font-black uppercase tracking-widest"
                 >
-                  Find Next Target
+                  {t.next_target}
                 </button>
             )}
           </div>

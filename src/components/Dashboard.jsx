@@ -3,9 +3,12 @@ import { useGameStore } from '../store/gameStore';
 import { Package, TrendingUp, AlertTriangle, Coffee, Beef, Zap, Users } from 'lucide-react';
 
 export const Dashboard = () => {
-  const { player, resources, updateResources, addXp, world } = useGameStore();
+  const { player, resources, updateResources, addXp, world, updatePlayerStamina } = useGameStore();
 
   const handleScavenge = () => {
+    if (player.stamina < 5) return;
+
+    updatePlayerStamina(-5);
     const amount = Math.floor(Math.random() * 5) + 1;
     if (player.path === 'ghoul') {
       updateResources({ meat: resources.meat + amount });
@@ -13,8 +16,6 @@ export const Dashboard = () => {
       updateResources({ supplies: resources.supplies + amount });
     }
     addXp(10);
-
-    // Auto-save feedback effect could go here
   };
 
   const handleEat = () => {
@@ -25,6 +26,8 @@ export const Dashboard = () => {
       }));
     }
   };
+
+  const t = translations[world.language] || translations.en;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
@@ -83,9 +86,10 @@ export const Dashboard = () => {
           <div className="space-y-2">
             <button
               onClick={handleScavenge}
-              className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white rounded px-4 py-3 transition-colors text-xs"
+              disabled={player.stamina < 5}
+              className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white rounded px-4 py-3 transition-colors text-xs disabled:opacity-50"
             >
-              Scavenge Nearby Area
+              Scavenge Nearby Area (-5 Stamina)
             </button>
             {player.path === 'ghoul' && (
               <button

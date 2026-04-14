@@ -7,6 +7,7 @@ export const useGameStore = create()(
       // Player State
       player: {
         name: 'Ken',
+        lastNameChange: 0,
         path: null,
         rank: 'C',
         level: 1,
@@ -62,6 +63,7 @@ export const useGameStore = create()(
         currentDistrict: 20,
         discoveredSectors: {},
         currentTime: 0,
+        language: 'en',
         stats: {
           explorations: 0,
           enemiesDefeated: 0,
@@ -185,6 +187,26 @@ export const useGameStore = create()(
         }
       })),
 
+      updatePlayerStamina: (amount) => set((state) => ({
+        player: {
+          ...state.player,
+          stamina: Math.max(0, Math.min(state.player.maxStamina, state.player.stamina + amount))
+        }
+      })),
+
+      setLanguage: (lang) => set((state) => ({
+        world: { ...state.world, language: lang }
+      })),
+
+      changePlayerName: (newName) => set((state) => {
+        const now = Date.now();
+        const cooldown = 24 * 60 * 60 * 1000;
+        if (now - state.player.lastNameChange < cooldown) return state;
+        return {
+          player: { ...state.player, name: newName, lastNameChange: now }
+        };
+      }),
+
       equipItem: (type, item) => set((state) => ({
         player: {
           ...state.player,
@@ -263,6 +285,9 @@ export const useGameStore = create()(
       tick: (buildingData) => set((state) => {
         const { player, world, resources, ownedBuildings } = state;
 
+        // Passive stamina regen
+        let staminaRegen = 0.1;
+
         // Passive hunger loss
         let hungerLoss = 0.05;
         if (player.kakuganActive) hungerLoss *= 3;
@@ -295,6 +320,7 @@ export const useGameStore = create()(
         return {
           player: {
             ...player,
+            stamina: Math.min(player.maxStamina, player.stamina + staminaRegen),
             hunger: Math.max(0, player.hunger - hungerLoss),
             sanity: Math.max(0, Math.min(100, player.sanity + sanityChange)),
             rcCells: Math.max(0, Math.min(player.maxRcCells, player.rcCells + rcChange)),

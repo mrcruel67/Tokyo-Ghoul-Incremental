@@ -1,10 +1,12 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
-import { Heart, Activity, Coffee, Skull, Zap } from 'lucide-react';
+import { Heart, Activity, Skull, Zap } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { translations } from '../utils/i18n';
 
 export const Header = () => {
-  const { player } = useGameStore();
+  const { player, world } = useGameStore();
+  const t = translations[world.language] || translations.en;
 
   const getRankColor = (rank) => {
     switch (rank) {
@@ -32,6 +34,18 @@ export const Header = () => {
       </div>
 
       <div className="flex items-center gap-8">
+        {/* Stamina */}
+        <div className="flex items-center gap-2 group">
+          <Zap className="w-4 h-4 text-yellow-400" />
+          <div className="w-24 h-2 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
+            <div
+              className="h-full bg-yellow-500 transition-all duration-500"
+              style={{ width: `${(player.stamina / player.maxStamina) * 100}%` }}
+            />
+          </div>
+          <span className="text-[10px] font-mono">{Math.floor(player.stamina)}</span>
+        </div>
+
         {/* HP */}
         <div className="flex items-center gap-2 group">
           <Heart className="w-4 h-4 text-red-500" />
@@ -46,7 +60,7 @@ export const Header = () => {
 
         {/* RC Cells */}
         <div className="flex items-center gap-2">
-          <Zap className="w-4 h-4 text-blue-400" />
+          <Activity className="w-4 h-4 text-blue-400" />
           <div className="w-32 h-2 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
             <div
               className="h-full bg-blue-500 transition-all duration-500"
