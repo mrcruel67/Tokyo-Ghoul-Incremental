@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { Skull, Shield, Zap, Target, Info } from 'lucide-react';
+import { translations } from '../utils/i18n';
 
 export const Intro = () => {
-  const { setPath, setRcType, player } = useGameStore();
+  const { setPath, setRcType, player, world } = useGameStore();
+  const t = translations[world?.language || 'en'] || translations.en;
   const [step, setStep] = useState(1);
   const [selectedPath, setSelectedPath] = useState(null);
   const [selectedRc, setSelectedRc] = useState(null);
@@ -46,8 +48,8 @@ export const Intro = () => {
         {step === 1 && (
           <div className="space-y-8 animate-in slide-in-from-bottom duration-500">
             <div className="text-center space-y-2">
-              <h1 className="text-4xl font-black text-red-600 tracking-tighter italic">CHOOSE YOUR FATE</h1>
-              <p className="text-zinc-500">How will you survive in the concrete jungle of Tokyo?</p>
+              <h1 className="text-4xl font-black text-red-600 tracking-tighter italic">{t.choose_fate}</h1>
+              <p className="text-zinc-500">{t.fate_desc}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -81,7 +83,7 @@ export const Intro = () => {
                 disabled={!selectedPath}
                 className="bg-red-600 text-white rounded px-12 py-3 hover:bg-red-700 transition-colors text-sm font-bold uppercase tracking-widest disabled:opacity-20"
               >
-                Continue
+                {t.continue}
               </button>
             </div>
           </div>
@@ -116,7 +118,7 @@ export const Intro = () => {
                 disabled={!selectedRc}
                 className="bg-red-600 text-white rounded px-12 py-3 hover:bg-red-700 transition-colors text-sm font-bold uppercase tracking-widest disabled:opacity-20"
               >
-                Finalize
+                {t.finalize}
               </button>
             </div>
           </div>
@@ -146,7 +148,7 @@ export const Intro = () => {
                 onClick={handleStart}
                 className="bg-red-600 text-white rounded px-20 py-4 hover:bg-red-700 transition-colors text-lg font-black uppercase tracking-[0.2em] shadow-[0_0_30px_rgba(139,0,0,0.3)]"
               >
-                Awaken
+                {t.awaken}
               </button>
               <p className="text-[10px] text-zinc-600 flex items-center gap-2">
                 <Info className="w-3 h-3" /> All choices are permanent for this run.

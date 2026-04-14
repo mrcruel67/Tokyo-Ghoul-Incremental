@@ -22,7 +22,7 @@ const NavItem = ({ icon: Icon, label, active, onClick }) => (
 
 export const Sidebar = ({ currentView, setView }) => {
   const { world } = useGameStore();
-  const t = translations[world.language] || translations.en;
+  const t = (world && translations[world.language]) || translations.en;
 
   return (
     <aside className="w-64 border-r border-zinc-800 bg-black/30 h-[calc(100vh-64px)] p-4 flex flex-col justify-between">

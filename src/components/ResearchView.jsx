@@ -7,7 +7,7 @@ import { translations } from '../utils/i18n';
 
 export const ResearchView = () => {
   const { player, resources, completedResearch, unlockResearch, world } = useGameStore();
-  const t = translations[world.language] || translations.en;
+  const t = (world && translations[world.language]) || translations.en;
   const availableTech = TECH_TREE[player.path] || [];
 
   const isAffordable = (cost) => {

@@ -29,9 +29,10 @@ const CHAPTERS = [
 
 export const StoryView = () => {
   const { player, world, addXp, addResource, addReputation, acceptMission, completeStoryChapter, storyChapter } = useGameStore();
-  const t = translations[world.language] || translations.en;
+  const t = (world && translations[world.language]) || translations.en;
 
   const handleStartChapter = (chap) => {
+    if (storyChapter >= chap.id) return;
     completeStoryChapter(chap.id);
     addXp(chap.rewards.xp);
     if (chap.rewards.reputation) {

@@ -6,7 +6,7 @@ import { translations } from '../utils/i18n';
 
 export const Header = () => {
   const { player, world } = useGameStore();
-  const t = translations[world.language] || translations.en;
+  const t = (world && translations[world.language]) || translations.en;
 
   const getRankColor = (rank) => {
     switch (rank) {

@@ -15,7 +15,7 @@ body {
 
 .btn-primary {
   padding: 0.5rem 1rem;
-  background-color: #dc2626;
+  background-color: var(--ghoul-red, #dc2626);
   color: white;
   border-radius: 0.375rem;
   border: none;
@@ -24,7 +24,7 @@ body {
 }
 
 .btn-primary:hover {
-  background-color: #b91c1c;
+  filter: brightness(1.2);
 }
 
 .btn-primary:disabled {

@@ -364,6 +364,29 @@ export const useGameStore = create()(
     }),
     {
       name: 'tokyo-ghoul-rebirth-save',
+      version: 2,
+      migrate: (persistedState, version) => {
+        const state = { ...persistedState };
+        if (version < 2) {
+            // Add missing structures
+            if (!state.world) state.world = {};
+            if (!state.world.stats) state.world.stats = {
+                explorations: 0, enemiesDefeated: 0, corpsesConsumed: 0,
+                alliesCount: 0, territoriesConquered: 0, manualRecoveries: 0,
+                lastManualStamina: 0
+            };
+            if (!state.world.reputation) state.world.reputation = {
+                ccg: 0, anteiku: 0, aogiri: 0, clowns: 0
+            };
+            if (!state.world.language) state.world.language = 'en';
+            if (!state.world.themeColor) state.world.themeColor = 'red';
+
+            // Fix old missions that were strings
+            state.activeMissions = [];
+            state.completedMissions = [];
+        }
+        return state;
+      }
     }
   )
 );

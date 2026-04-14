@@ -5,7 +5,7 @@ import { translations } from '../utils/i18n';
 
 export const InventoryView = () => {
   const { player, world, modifyStat, spendResources, addResource } = useGameStore();
-  const t = translations[world.language] || translations.en;
+  const t = (world && translations[world.language]) || translations.en;
 
   const rerollStats = () => {
     if (player.money < 1000) return;

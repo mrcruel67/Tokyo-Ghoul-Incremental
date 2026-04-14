@@ -54,7 +54,9 @@ export const Dashboard = () => {
       }));
   };
 
-  const t = translations[world.language] || translations.en;
+  const t = (world && translations[world.language]) || translations.en;
+
+  if (!t) return null;
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500">
