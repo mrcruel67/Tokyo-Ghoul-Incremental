@@ -57,6 +57,7 @@ export const useGameStore = create()(
       completedResearch: [], // [researchId]
       activeMissions: [], // [{ id, title, description, reward, progress, goal, type }]
       completedMissions: [],
+      storyChapter: 0,
 
       // World
       world: {
@@ -64,9 +65,17 @@ export const useGameStore = create()(
         discoveredSectors: {},
         currentTime: 0,
         language: 'en',
+        themeColor: 'red',
+        background: 'default',
+        customBg: '',
         stats: {
           explorations: 0,
           enemiesDefeated: 0,
+          corpsesConsumed: 0,
+          alliesCount: 0,
+          territoriesConquered: 0,
+          manualRecoveries: 0,
+          lastManualStamina: 0,
         },
         reputation: {
           ccg: 0,
@@ -198,6 +207,10 @@ export const useGameStore = create()(
         world: { ...state.world, language: lang }
       })),
 
+      setTheme: (updates) => set((state) => ({
+        world: { ...state.world, ...updates }
+      })),
+
       changePlayerName: (newName) => set((state) => {
         const now = Date.now();
         const cooldown = 24 * 60 * 60 * 1000;
@@ -287,6 +300,10 @@ export const useGameStore = create()(
         }
       })),
 
+      completeStoryChapter: (chapterId) => set((state) => ({
+        storyChapter: Math.max(state.storyChapter, chapterId)
+      })),
+
       tick: (buildingData) => set((state) => {
         const { player, world, resources, ownedBuildings } = state;
 
@@ -320,6 +337,13 @@ export const useGameStore = create()(
                     }
                 }
             }
+        }
+
+        // Random clicks if insane
+        const isInsane = player.sanity < 5 || player.hunger < 5;
+        if (isInsane && Math.random() < 0.05) {
+            // Deplete more hunger/sanity or money
+            newResources.money = Math.max(0, (newResources.money || 0) - 5);
         }
 
         return {

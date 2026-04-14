@@ -7,22 +7,31 @@ export const MissionView = () => {
   const { player, world, activeMissions, completedMissions, resources, acceptMission, completeMission } = useGameStore();
 
   const availableMissions = MISSION_POOL.filter(m =>
-    m.path === player.path &&
+    (m.path === player.path || m.path === 'any') &&
     !activeMissions.find(am => am.id === m.id) &&
-    !completedMissions.includes(m.id)
+    (!completedMissions.includes(m.id) || m.repeatable)
   );
 
-  const checkCompletion = (mission) => {
+  const getProgress = (mission) => {
     if (mission.goal.resource) {
-      return (resources[mission.goal.resource] || 0) >= mission.goal.amount;
+      return { current: (resources[mission.goal.resource] || 0), goal: mission.goal.amount };
     }
     if (mission.goal.type === 'explore') {
-      return (world.stats.explorations || 0) >= mission.goal.amount;
+      return { current: (world.stats.explorations || 0), goal: mission.goal.amount };
     }
     if (mission.goal.type === 'combat') {
-      return (world.stats.enemiesDefeated || 0) >= mission.goal.amount;
+      return { current: (world.stats.enemiesDefeated || 0), goal: mission.goal.amount };
     }
-    return false;
+    if (mission.goal.type === 'manual_recover') {
+        // Need to add manual recovery tracking to world stats
+        return { current: (world.stats.manualRecoveries || 0), goal: mission.goal.amount };
+    }
+    return { current: 0, goal: 1 };
+  };
+
+  const checkCompletion = (mission) => {
+    const prog = getProgress(mission);
+    return prog.current >= prog.goal;
   };
 
   return (
@@ -42,15 +51,28 @@ export const MissionView = () => {
             </div>
           )}
           <div className="space-y-4">
-            {activeMissions.map(m => (
+            {activeMissions.map(m => {
+              const prog = getProgress(m);
+              const title = m.title[world.language] || m.title.en;
+              const desc = m.description[world.language] || m.description.en;
+
+              return (
               <div key={m.id} className="p-5 bg-zinc-900 border border-zinc-800 rounded-xl space-y-4">
                 <div className="flex justify-between items-start">
                   <div>
-                    <h4 className="font-bold text-white text-lg">{m.title}</h4>
-                    <p className="text-xs text-zinc-400 mt-1">{m.description}</p>
+                    <h4 className="font-bold text-white text-lg">{title}</h4>
+                    <p className="text-xs text-zinc-400 mt-1">{desc}</p>
                   </div>
                   <Trophy className="text-yellow-500 w-5 h-5" />
                 </div>
+
+                <div className="w-full h-2 bg-zinc-950 rounded-full overflow-hidden">
+                   <div
+                    className="h-full bg-red-600 transition-all duration-300"
+                    style={{ width: `${Math.min(100, (prog.current / prog.goal) * 100)}%` }}
+                   />
+                </div>
+                <p className="text-[10px] text-zinc-500 text-right">Progress: {prog.current} / {prog.goal}</p>
 
                 <div className="flex items-center justify-between pt-4 border-t border-zinc-800">
                   <div className="text-[10px] text-zinc-500">
@@ -69,24 +91,27 @@ export const MissionView = () => {
                   </button>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
 
           <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-widest pt-4">Available Tasks</h3>
           <div className="space-y-3">
-            {availableMissions.map(m => (
+            {availableMissions.map(m => {
+              const title = m.title[world.language] || m.title.en;
+              const desc = m.description[world.language] || m.description.en;
+              return (
               <button
                 key={m.id}
                 onClick={() => acceptMission(m)}
                 className="w-full p-4 bg-zinc-950 border border-zinc-800 hover:border-zinc-600 rounded-lg flex items-center justify-between group transition-all"
               >
                 <div className="text-left">
-                  <span className="text-xs font-bold text-white group-hover:text-red-500 transition-colors">{m.title}</span>
-                  <p className="text-[10px] text-zinc-500">{m.description}</p>
+                  <span className="text-xs font-bold text-white group-hover:text-red-500 transition-colors">{title}</span>
+                  <p className="text-[10px] text-zinc-500">{desc}</p>
                 </div>
                 <ArrowRight className="w-4 h-4 text-zinc-700 group-hover:text-red-500 transition-all transform group-hover:translate-x-1" />
               </button>
-            ))}
+            )})}
           </div>
         </div>
 

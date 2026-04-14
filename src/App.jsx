@@ -11,6 +11,7 @@ import { MissionView } from './components/MissionView';
 import { SettingsView } from './components/SettingsView';
 import { StoryView } from './components/StoryView';
 import { InventoryView } from './components/InventoryView';
+import { GuideView } from './components/GuideView';
 import { useGameStore } from './store/gameStore';
 import { BUILDINGS } from './data/buildings';
 
@@ -52,6 +53,19 @@ function App() {
     return () => clearInterval(interval);
   }, [tick]);
 
+  // Insanity Auto-actions
+  useEffect(() => {
+    if (player.sanity < 5 || player.hunger < 5) {
+      const interval = setInterval(() => {
+        // Randomly "click" something or trigger an effect
+        const actions = ['scavenge', 'eat', 'move'];
+        const randomAction = actions[Math.floor(Math.random() * actions.length)];
+        console.log("Insanity trigger:", randomAction);
+      }, 15000);
+      return () => clearInterval(interval);
+    }
+  }, [player.sanity, player.hunger]);
+
   if (!player.path) {
     return <Intro />;
   }
@@ -67,12 +81,36 @@ function App() {
       case 'profile': return <InventoryView />;
       case 'settings': return <SettingsView />;
       case 'story': return <StoryView />;
+      case 'guide': return <GuideView />;
       default: return <Dashboard />;
     }
   };
 
+  const isInsane = player.sanity < 5 || player.hunger < 5;
+
+  const bgImages = {
+    default: '',
+    anteiku: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80',
+    ccg: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80',
+    city: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80'
+  };
+
+  const currentBg = world.customBg || bgImages[world.background] || '';
+
   return (
-    <div className="min-h-screen flex flex-col selection:bg-ghoul-red selection:text-white">
+    <div
+        className={`min-h-screen flex flex-col selection:bg-ghoul-red selection:text-white transition-all duration-1000 ${isInsane ? 'brightness-[0.8] saturate-[1.5]' : ''}`}
+        style={{
+            '--ghoul-red': world.themeColor === 'emerald' ? '#10b981' : world.themeColor,
+            backgroundImage: currentBg ? `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url(${currentBg})` : 'none',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundAttachment: 'fixed'
+        }}
+    >
+      {isInsane && (
+        <div className="fixed inset-0 pointer-events-none z-[999] opacity-20 bg-[url('https://media.giphy.com/media/oEI9uWUicls_u/giphy.gif')] mix-blend-screen" />
+      )}
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar currentView={currentView} setView={setView} />

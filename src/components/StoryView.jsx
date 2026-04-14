@@ -28,8 +28,16 @@ const CHAPTERS = [
 ];
 
 export const StoryView = () => {
-  const { player, world, addXp, addResource, addReputation } = useGameStore();
+  const { player, world, addXp, addResource, addReputation, acceptMission, completeStoryChapter, storyChapter } = useGameStore();
   const t = translations[world.language] || translations.en;
+
+  const handleStartChapter = (chap) => {
+    completeStoryChapter(chap.id);
+    addXp(chap.rewards.xp);
+    if (chap.rewards.reputation) {
+        Object.entries(chap.rewards.reputation).forEach(([f, a]) => addReputation(f, a));
+    }
+  };
 
   const isUnlocked = (req) => {
     if (req.level && player.level < req.level) return false;
@@ -53,7 +61,7 @@ export const StoryView = () => {
           return (
             <div
               key={chap.id}
-              className={`p-6 border rounded-xl transition-all ${unlocked ? 'bg-zinc-950 border-zinc-800 hover:border-red-600/50' : 'bg-zinc-900/50 border-zinc-900 opacity-50 grayscale'}`}
+              className={`p-6 border rounded-xl transition-all ${unlocked ? 'bg-zinc-950 border-zinc-800 hover:border-red-600/50' : 'bg-zinc-900/50 border-zinc-900 opacity-50 grayscale'} ${storyChapter >= chap.id ? 'border-green-600/50 bg-green-950/5' : ''}`}
             >
               <div className="flex justify-between items-start">
                 <div className="space-y-2">
@@ -63,10 +71,18 @@ export const StoryView = () => {
                   </div>
                   <p className="text-sm text-zinc-500 max-w-2xl">{chap.description}</p>
                 </div>
-                {unlocked && (
-                   <button className="p-3 bg-red-600 rounded-full hover:bg-red-700 transition-colors">
+                {unlocked && storyChapter < chap.id && (
+                   <button
+                    onClick={() => handleStartChapter(chap)}
+                    className="p-3 bg-red-600 rounded-full hover:bg-red-700 transition-colors"
+                   >
                      <ChevronRight className="w-6 h-6" />
                    </button>
+                )}
+                {storyChapter >= chap.id && (
+                   <div className="p-2 text-green-500 font-black text-[10px] uppercase tracking-widest border border-green-500/20 rounded">
+                      Completed
+                   </div>
                 )}
               </div>
 

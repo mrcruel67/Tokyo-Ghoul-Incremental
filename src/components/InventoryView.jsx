@@ -68,15 +68,39 @@ export const InventoryView = () => {
         </div>
 
         {/* Stats Summary */}
-        <div className="lg:col-span-2 space-y-4">
-          <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">{t.genetic_potential}</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {Object.entries(player.stats).map(([stat, val]) => (
-              <div key={stat} className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800">
-                <p className="text-[10px] text-zinc-500 uppercase">{stat}</p>
-                <p className="text-2xl font-mono text-white">{val}</p>
-              </div>
-            ))}
+        <div className="lg:col-span-2 space-y-8">
+          <div className="space-y-4">
+            <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">{t.genetic_potential}</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {Object.entries(player.stats).map(([stat, val]) => (
+                <div key={stat} className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800">
+                    <p className="text-[10px] text-zinc-500 uppercase">{stat}</p>
+                    <p className="text-2xl font-mono text-white">{val}</p>
+                </div>
+                ))}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+             <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">Combat Statistics</h3>
+             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div className="space-y-1">
+                    <p className="text-[10px] text-zinc-600 uppercase">{t.bounty}</p>
+                    <p className="text-xl font-black text-red-600">¥{(world.stats.enemiesDefeated * 1500).toLocaleString()}</p>
+                </div>
+                <div className="space-y-1">
+                    <p className="text-[10px] text-zinc-600 uppercase">{t.corpses}</p>
+                    <p className="text-xl font-bold text-zinc-200">{world.stats.corpsesConsumed}</p>
+                </div>
+                <div className="space-y-1">
+                    <p className="text-[10px] text-zinc-600 uppercase">{t.allies}</p>
+                    <p className="text-xl font-bold text-zinc-200">{world.stats.alliesCount}</p>
+                </div>
+                <div className="space-y-1">
+                    <p className="text-[10px] text-zinc-600 uppercase">{t.territories}</p>
+                    <p className="text-xl font-bold text-zinc-200">{world.stats.territoriesConquered}</p>
+                </div>
+             </div>
           </div>
         </div>
       </div>

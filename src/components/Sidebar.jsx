@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, Map, Swords, Microscope, Home, Settings, User, Target, Book } from 'lucide-react';
+import { LayoutDashboard, Map, Swords, Microscope, Home, Settings, User, Target, Book, HelpCircle } from 'lucide-react';
 import { useGameStore } from '../store/gameStore';
 import { cn } from '../utils/cn';
 import { translations } from '../utils/i18n';
@@ -77,6 +77,12 @@ export const Sidebar = ({ currentView, setView }) => {
           label={t.profile}
           active={currentView === 'profile'}
           onClick={() => setView('profile')}
+        />
+        <NavItem
+          icon={HelpCircle}
+          label="Guide"
+          active={currentView === 'guide'}
+          onClick={() => setView('guide')}
         />
         <NavItem
           icon={Settings}

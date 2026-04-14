@@ -22,10 +22,36 @@ export const Dashboard = () => {
   const handleEat = () => {
     if (resources.meat >= 1) {
       updateResources({ meat: resources.meat - 1 });
+
+      const hpRegen = player.path === 'ghoul' ? player.maxHp * 0.07 : player.maxHp * 0.04;
+      const stamRegen = player.path === 'ghoul' ? player.maxStamina * 0.02 : player.maxStamina * 0.06;
+
       useGameStore.setState((state) => ({
-        player: { ...state.player, hunger: Math.min(100, state.player.hunger + 30) }
+        player: {
+            ...state.player,
+            hunger: Math.min(100, state.player.hunger + 30),
+            hp: Math.min(state.player.maxHp, state.player.hp + hpRegen),
+            stamina: Math.min(state.player.maxStamina, state.player.stamina + stamRegen)
+        }
       }));
     }
+  };
+
+  const handleManualRecover = () => {
+      const now = Date.now();
+      if (now - world.stats.lastManualStamina < 2000) return;
+
+      updatePlayerStamina(1);
+      useGameStore.setState(state => ({
+          world: {
+            ...state.world,
+            stats: {
+                ...state.world.stats,
+                lastManualStamina: now,
+                manualRecoveries: (state.world.stats.manualRecoveries || 0) + 1
+            }
+          }
+      }));
   };
 
   const t = translations[world.language] || translations.en;
@@ -92,15 +118,21 @@ export const Dashboard = () => {
             >
               {t.scavenge_cost}
             </button>
-            {player.path === 'ghoul' && (
-              <button
-                onClick={handleEat}
-                className="w-full bg-red-600 text-white rounded px-4 py-3 hover:bg-red-700 transition-colors text-xs disabled:opacity-50"
-                disabled={player.hunger > 90 || resources.meat < 1}
-              >
-                {t.eat_meat_count} ({Math.floor(resources.meat)})
-              </button>
-            )}
+            <button
+              onClick={handleEat}
+              className="w-full bg-red-600 text-white rounded px-4 py-3 hover:bg-red-700 transition-colors text-xs disabled:opacity-50"
+              disabled={player.hunger > 90 || resources.meat < 1}
+            >
+              {t.eat_meat_count} ({Math.floor(resources.meat)})
+            </button>
+
+            <button
+                onClick={handleManualRecover}
+                disabled={Date.now() - world.stats.lastManualStamina < 2000}
+                className="w-full bg-blue-600 text-white rounded px-4 py-3 hover:bg-blue-700 transition-colors text-xs disabled:opacity-50"
+            >
+                {t.manual_recovery}
+            </button>
           </div>
         </div>
       </div>

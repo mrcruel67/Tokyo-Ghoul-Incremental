@@ -4,7 +4,12 @@ import { Home, Battery } from 'lucide-react';
 import { BUILDINGS } from '../data/buildings';
 
 export const BaseView = () => {
-  const { player, resources, ownedBuildings, buyBuilding } = useGameStore();
+  const { player, resources, ownedBuildings, buyBuilding, storyChapter } = useGameStore();
+
+  const filteredBuildings = BUILDINGS.filter(b => {
+    if (b.id === 'scrap_collector') return storyChapter >= 1;
+    return true;
+  });
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 text-white">
@@ -16,7 +21,7 @@ export const BaseView = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Available Structures</h3>
-          {BUILDINGS.map((b) => (
+          {filteredBuildings.map((b) => (
             <div key={b.id} className="bg-zinc-950 border border-zinc-800 p-4 rounded-lg flex gap-4 items-center group hover:border-red-600/50 transition-colors">
               <div className="p-4 bg-zinc-900 rounded-lg group-hover:bg-red-600/10">
                 <b.icon className="w-6 h-6 text-zinc-400 group-hover:text-red-600" />
