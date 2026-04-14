@@ -34,33 +34,33 @@ export const InventoryView = () => {
           disabled={player.money < 1000}
           className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 px-4 py-2 rounded text-xs font-bold transition-all disabled:opacity-50"
         >
-          <RefreshCw className="w-4 h-4" /> Reroll Stats (¥1,000)
+          <RefreshCw className="w-4 h-4" /> {t.reroll} (¥1,000)
         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Equipment Slots */}
         <div className="space-y-4">
-          <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">Equipment</h3>
+          <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">{t.equipment}</h3>
           <div className="grid grid-cols-1 gap-3">
              <div className="flex items-center gap-4 p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
                 <div className="p-3 bg-zinc-900 rounded"><Swords className="w-5 h-5 text-zinc-600" /></div>
                 <div>
-                   <p className="text-[10px] text-zinc-500 uppercase">Weapon / Quinque</p>
-                   <p className="text-sm font-bold text-zinc-300">{player.equipment.weapon?.name || 'Empty'}</p>
+                   <p className="text-[10px] text-zinc-500 uppercase">{t.weapon}</p>
+                   <p className="text-sm font-bold text-zinc-300">{player.equipment.weapon?.name || t.empty}</p>
                 </div>
              </div>
              <div className="flex items-center gap-4 p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
                 <div className="p-3 bg-zinc-900 rounded"><Shield className="w-5 h-5 text-zinc-600" /></div>
                 <div>
-                   <p className="text-[10px] text-zinc-500 uppercase">Armor / Arata</p>
-                   <p className="text-sm font-bold text-zinc-300">{player.equipment.armor?.name || 'Empty'}</p>
+                   <p className="text-[10px] text-zinc-500 uppercase">{t.armor}</p>
+                   <p className="text-sm font-bold text-zinc-300">{player.equipment.armor?.name || t.empty}</p>
                 </div>
              </div>
              <div className="flex items-center gap-4 p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
                 <div className="p-3 bg-zinc-900 rounded"><Package className="w-5 h-5 text-zinc-600" /></div>
                 <div>
-                   <p className="text-[10px] text-zinc-500 uppercase">Mask / Accessory</p>
+                   <p className="text-[10px] text-zinc-500 uppercase">{t.mask}</p>
                    <p className="text-sm font-bold text-zinc-300">{player.equipment.mask?.name || 'Standard Mask'}</p>
                 </div>
              </div>
@@ -69,7 +69,7 @@ export const InventoryView = () => {
 
         {/* Stats Summary */}
         <div className="lg:col-span-2 space-y-4">
-          <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">Genetic Potential</h3>
+          <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-2">{t.genetic_potential}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {Object.entries(player.stats).map(([stat, val]) => (
               <div key={stat} className="bg-zinc-900/50 p-4 rounded-lg border border-zinc-800">

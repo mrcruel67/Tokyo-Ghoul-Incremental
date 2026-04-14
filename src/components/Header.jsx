@@ -29,7 +29,7 @@ export const Header = () => {
         </div>
         <div className="h-4 w-px bg-zinc-800" />
         <span className={cn("text-sm font-bold tracking-widest", getRankColor(player.rank))}>
-          RANK {player.rank}
+          {t.rank} {player.rank}
         </span>
       </div>
 

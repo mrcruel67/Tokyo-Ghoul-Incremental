@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { Swords, Skull } from 'lucide-react';
 import { calculateDamage } from '../utils/combatEngine';
+import { translations } from '../utils/i18n';
 
 export const CombatView = () => {
   const { player, addXp, addResource, updatePlayerHealth, world, addReputation } = useGameStore();

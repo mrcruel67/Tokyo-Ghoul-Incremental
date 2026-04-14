@@ -1,6 +1,7 @@
 import React from 'react';
 import { useGameStore } from '../store/gameStore';
 import { Package, TrendingUp, AlertTriangle, Coffee, Beef, Zap, Users } from 'lucide-react';
+import { translations } from '../utils/i18n';
 
 export const Dashboard = () => {
   const { player, resources, updateResources, addXp, world, updatePlayerStamina } = useGameStore();
@@ -35,23 +36,23 @@ export const Dashboard = () => {
         {/* Resource Overview */}
         <div className="card space-y-4">
           <h3 className="text-zinc-400 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
-            <Package className="w-4 h-4" /> Inventory
+            <Package className="w-4 h-4" /> {t.inventory}
           </h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <span className="text-[10px] text-zinc-500 block uppercase">Meat</span>
+              <span className="text-[10px] text-zinc-500 block uppercase">{t.meat}</span>
               <span className="text-lg font-mono flex items-center gap-2">
                 <Beef className="w-4 h-4 text-red-800" /> {Math.floor(resources.meat)}
               </span>
             </div>
             <div className="space-y-1">
-              <span className="text-[10px] text-zinc-500 block uppercase">Coffee</span>
+              <span className="text-[10px] text-zinc-500 block uppercase">{t.coffee}</span>
               <span className="text-lg font-mono flex items-center gap-2">
                 <Coffee className="w-4 h-4 text-amber-700" /> {Math.floor(resources.coffee)}
               </span>
             </div>
             <div className="space-y-1">
-              <span className="text-[10px] text-zinc-500 block uppercase">Steel</span>
+              <span className="text-[10px] text-zinc-500 block uppercase">{t.steel}</span>
               <span className="text-lg font-mono flex items-center gap-2 text-zinc-300">
                 <Zap className="w-4 h-4" /> {Math.floor(resources.steel)}
               </span>
@@ -62,7 +63,7 @@ export const Dashboard = () => {
         {/* Path Status */}
         <div className="card space-y-4 border-red-600/30 bg-red-600/5">
           <h3 className="text-zinc-400 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-red-600" /> Current Path: {player.path || 'Undecided'}
+            <TrendingUp className="w-4 h-4 text-red-600" /> {t.path}: {player.path ? player.path.toUpperCase() : t.undecided}
           </h3>
           <div className="space-y-2">
             <div className="flex justify-between text-xs">
@@ -70,7 +71,7 @@ export const Dashboard = () => {
               <span className="text-blue-400 font-bold uppercase tracking-tighter">{player.rcType || 'None'}</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-zinc-500">Kakuja:</span>
+              <span className="text-zinc-500">{t.kakuja}:</span>
               <span className={player.kakujaLevel > 0 ? "text-red-500" : "text-zinc-600"}>
                 {player.kakujaLevel === 0 ? "N/A" : player.kakujaLevel === 1 ? "Half" : "Full"}
               </span>
@@ -81,7 +82,7 @@ export const Dashboard = () => {
         {/* Quick Actions */}
         <div className="card space-y-4">
           <h3 className="text-zinc-400 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
-             Quick Actions
+             {t.quick_actions}
           </h3>
           <div className="space-y-2">
             <button
@@ -89,7 +90,7 @@ export const Dashboard = () => {
               disabled={player.stamina < 5}
               className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white rounded px-4 py-3 transition-colors text-xs disabled:opacity-50"
             >
-              Scavenge Nearby Area (-5 Stamina)
+              {t.scavenge_cost}
             </button>
             {player.path === 'ghoul' && (
               <button
@@ -97,7 +98,7 @@ export const Dashboard = () => {
                 className="w-full bg-red-600 text-white rounded px-4 py-3 hover:bg-red-700 transition-colors text-xs disabled:opacity-50"
                 disabled={player.hunger > 90 || resources.meat < 1}
               >
-                Eat Meat ({Math.floor(resources.meat)})
+                {t.eat_meat_count} ({Math.floor(resources.meat)})
               </button>
             )}
           </div>
@@ -108,7 +109,7 @@ export const Dashboard = () => {
       <div className="card p-6 space-y-4">
         <div className="flex items-center gap-2 mb-2">
           <Users className="w-5 h-5 text-zinc-500" />
-          <h3 className="text-sm font-bold text-zinc-300 uppercase tracking-widest">Global Influence</h3>
+          <h3 className="text-sm font-bold text-zinc-300 uppercase tracking-widest">{t.influence}</h3>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {world.reputation && Object.entries(world.reputation).map(([faction, value]) => (
@@ -131,7 +132,7 @@ export const Dashboard = () => {
       {/* World Status */}
       <div className="card border-zinc-800">
         <h3 className="text-zinc-400 text-xs font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-yellow-500" /> District 20 Intelligence
+          <AlertTriangle className="w-4 h-4 text-yellow-500" /> {t.intel}
         </h3>
         <p className="text-sm text-zinc-500 leading-relaxed italic">
           "The streets are quiet tonight. A scent of fresh coffee lingers in the air near the 20th Ward. CCG presence is minimal, but sightings of 'Rabbit' have been reported recently. Stay vigilant."

@@ -1,5 +1,6 @@
 import React from 'react';
 import { LayoutDashboard, Map, Swords, Microscope, Home, Settings, User, Target, Book } from 'lucide-react';
+import { useGameStore } from '../store/gameStore';
 import { cn } from '../utils/cn';
 import { translations } from '../utils/i18n';
 

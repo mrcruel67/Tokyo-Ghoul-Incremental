@@ -3,9 +3,11 @@ import { useGameStore } from '../store/gameStore';
 import { TECH_TREE } from '../data/techTree';
 import { Microscope, Beaker, CheckCircle2, Lock } from 'lucide-react';
 import { cn } from '../utils/cn';
+import { translations } from '../utils/i18n';
 
 export const ResearchView = () => {
-  const { player, resources, completedResearch, unlockResearch } = useGameStore();
+  const { player, resources, completedResearch, unlockResearch, world } = useGameStore();
+  const t = translations[world.language] || translations.en;
   const availableTech = TECH_TREE[player.path] || [];
 
   const isAffordable = (cost) => {
@@ -21,7 +23,7 @@ export const ResearchView = () => {
     <div className="p-8 space-y-8 animate-in fade-in duration-500 text-white">
       <div className="flex items-center gap-3">
         <Microscope className="w-8 h-8 text-blue-500" />
-        <h2 className="text-3xl font-black italic tracking-tighter uppercase">Development & Research</h2>
+        <h2 className="text-3xl font-black italic tracking-tighter uppercase">{t.research}</h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

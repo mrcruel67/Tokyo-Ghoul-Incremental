@@ -253,12 +253,16 @@ export const useGameStore = create()(
         // Manual reward application to avoid store action issues inside set
         const newPlayer = { ...state.player };
         const newResources = { ...state.resources };
+        const newWorld = { ...state.world };
+
         if (mission.reward) {
           for (const [res, val] of Object.entries(mission.reward)) {
             if (res === 'money') newPlayer.money += val;
-            else if (res === 'xp') {
-               // simplified xp add
-               newPlayer.xp += val;
+            else if (res === 'xp') newPlayer.xp += val;
+            else if (res === 'reputation') {
+              Object.entries(val).forEach(([faction, amount]) => {
+                newWorld.reputation[faction] = (newWorld.reputation[faction] || 0) + amount;
+              });
             }
             else newResources[res] = (newResources[res] || 0) + val;
           }
@@ -268,7 +272,8 @@ export const useGameStore = create()(
           activeMissions: newActive,
           completedMissions: newCompleted,
           player: newPlayer,
-          resources: newResources
+          resources: newResources,
+          world: newWorld
         };
       }),
 
